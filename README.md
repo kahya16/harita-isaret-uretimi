@@ -1,50 +1,65 @@
 # 🗺️ Yapay Zeka Harita İşaretleri Stüdyosu
-Bu proje, kullanıcıların metin açıklamaları ve stil seçenekleri kullanarak yapay zeka yardımıyla tamamen özelleştirilmiş harita işaretleri (map markers) oluşturmasını sağlayan bir web uygulamasıdır. Projeniz veya haritanız için mükemmel ikonu aramak yerine, sadece hayal edin ve saniyeler içinde oluşturun!
-<img width="1517" height="862" alt="image" src="https://github.com/user-attachments/assets/14b535c9-e64e-49c2-8e9b-47d47335aae7" />
+
+Bu proje, kullanıcıların **metin açıklamaları** ve **stil seçenekleri** kullanarak yapay zeka yardımıyla tamamen özelleştirilmiş **harita işaretleri (map markers)** oluşturmasını sağlayan bir web uygulamasıdır.  
+Artık projeniz veya haritanız için mükemmel ikonu aramak zorunda değilsiniz — sadece hayal edin ve saniyeler içinde oluşturun! 🚀
+
+---
+
+<img width="1517" height="862" alt="image" src="https://github.com/user-attachments/assets/9d256a5c-335c-4755-bba9-5e4da1509e1a" />
 
 
-✨ Özellikler
-Metin Tabanlı Üretim: İstediğiniz harita işaretini basitçe metinle açıklayarak oluşturun (Örn: "eski bir kale", "modern bir kahve dükkanı").
+---
 
-Stil Seçenekleri: "Minimalist", "3D", "Pixel Art" ve "Vintage" gibi çeşitli stillerle işaretinizin görünümünü zenginleştirin.
+## ✨ Özellikler
+- **Metin Tabanlı Üretim:**  
+  Basit açıklamalarla işaret oluşturun.  
+  Örn: `"eski bir kale"`, `"modern bir kahve dükkanı"`  
 
-Renk ve Detay Kontrolü: "Canlı Renkler", "Pastel Tonlar" gibi renk paletleri ve "Sade Çizgiler", "Yüksek Detaylı" gibi detay seviyeleri belirleyin.
+- **Stil Seçenekleri:**  
+  "Minimalist", "3D", "Pixel Art", "Vintage" vb.  
 
-Arka Plan Temizleme: Oluşturulan görsellerin beyaz arka planı otomatik olarak kaldırılır, böylece haritanızda temiz bir şekilde kullanılabilirler.
+- **Renk & Detay Kontrolü:**  
+  "Canlı Renkler", "Pastel Tonlar", "Sade Çizgiler", "Yüksek Detaylı"  
 
-Anında Harita Önizlemesi: Oluşturduğunuz harita işaretini Leaflet.js ile entegre edilmiş interaktif bir harita üzerinde anında görüntüleyin.
+- **Arka Plan Temizleme:**  
+  Beyaz arka plan otomatik kaldırılır → şeffaf PNG ikonları hazır.  
 
-Duyarlı Tasarım: Mobil cihazlardan masaüstü bilgisayarlara kadar tüm ekran boyutlarında sorunsuz çalışır.
+- **Anında Harita Önizlemesi:**  
+  Leaflet.js entegrasyonu sayesinde üretilen işareti haritada canlı görün.  
 
-Kullanıcı Dostu Arayüz: Anlaşılır adımlar ve yardım menüsü ile kolay bir kullanım deneyimi sunar.
+- **Duyarlı Tasarım:**  
+  Mobil & masaüstü uyumluluk.  
 
-🛠️ Kullanılan Teknolojiler
-Frontend: HTML5, CSS3, Vanilla JavaScript
+- **Kullanıcı Dostu Arayüz:**  
+  Yardım menüsü ve basit adımlarla kolay kullanım.  
 
-API: Google Gemini API (gemini-2.5-flash-image-preview modeli)
+---
 
-Harita Kütüphanesi: Leaflet.js
+## 🛠️ Kullanılan Teknolojiler
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript  
+- **API:** Google Gemini API (`gemini-2.5-flash-image-preview`)  
+- **Harita Kütüphanesi:** Leaflet.js  
 
-🚀 Nasıl Çalışır?
-Uygulama, kullanıcı tarafından girilen temel açıklamayı ve seçilen stil etiketlerini birleştirerek Google Gemini API'si için optimize edilmiş bir metin istemi (prompt) oluşturur. API'den gelen base64 formatındaki görsel, istemci tarafında işlenerek arka planı şeffaf hale getirilir. Son olarak, bu şeffaf görsel hem sonuç kartında hem de Leaflet haritası üzerinde özel bir ikon olarak görüntülenir.
+---
 
-🏃‍♂️ Nasıl Kullanılır?
-Projeyi klonlayın veya indirin ve index.html dosyasını tarayıcınızda açın.
+## 🚀 Nasıl Çalışır?
+1. Kullanıcının girdiği açıklama + seçilen stil etiketleri → **Google Gemini API prompt’u** oluşturulur.  
+2. API’den gelen **base64 görsel**, istemci tarafında işlenir.  
+3. **Arka plan şeffaf hale getirilir**.  
+4. Sonuç:  
+   - Sol panelde görüntülenir.  
+   - Leaflet.js haritasında özel ikon olarak işaretlenir.  
 
-Google AI Studio üzerinden bir Google Gemini API Anahtarı edinin.
+---
 
-Uygulamadaki "Google Gemini API Key" alanına anahtarınızı girin.
+## 🏃‍♂️ Nasıl Kullanılır?
+1. Projeyi **klonlayın veya indirin**.  
+2. `index.html` dosyasını tarayıcıda açın.  
+3. [Google AI Studio](https://aistudio.google.com/) üzerinden bir **Gemini API Key** edinin.  
+4. API anahtarınızı uygulamadaki **Google Gemini API Key** alanına girin.  
+5. Açıklamanızı yazın → stil, renk, detay seçin.  
+6. **🎨 "Harita İşareti Oluştur"** butonuna basın.  
+7. Sonuçları hem panelde hem de haritada görün. 🎉  
 
-Oluşturmak istediğiniz harita işaretini "Harita İşareti Açıklaması Girin" kutucuğuna yazın.
+---
 
-İsteğe bağlı olarak stil, renk paleti ve detay seviyesi seçin.
-
-"🎨 Harita İşareti Oluştur" butonuna tıklayın.
-
-Sonucun sol panelde ve harita üzerinde belirmesini izleyin!
-
-✍️ Yazar
-Bu proje ❤️ ile Emiray Kahya tarafından geliştirilmiştir.
-
-📄 Lisans
-Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için LICENSE dosyasına göz atabilirsiniz.
