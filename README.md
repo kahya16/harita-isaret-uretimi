@@ -1,7 +1,7 @@
 # 🗺️ Yapay Zeka Harita İşaretleri Stüdyosu
 Bu proje, kullanıcıların metin açıklamaları ve stil seçenekleri kullanarak yapay zeka yardımıyla tamamen özelleştirilmiş harita işaretleri (map markers) oluşturmasını sağlayan bir web uygulamasıdır. Projeniz veya haritanız için mükemmel ikonu aramak yerine, sadece hayal edin ve saniyeler içinde oluşturun!
+<img width="1517" height="862" alt="image" src="https://github.com/user-attachments/assets/14b535c9-e64e-49c2-8e9b-47d47335aae7" />
 
-(Not: Bu bir yer tutucu resimdir. Projenizin gerçek bir ekran görüntüsü ile değiştirin.)
 
 ✨ Özellikler
 Metin Tabanlı Üretim: İstediğiniz harita işaretini basitçe metinle açıklayarak oluşturun (Örn: "eski bir kale", "modern bir kahve dükkanı").
