@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Yapay Zeka Harita İşaretleri Stüdyosu</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #1e40af 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.2);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .credit {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            position: relative;
+        }
+
+        .map-panel {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .map-panel .section-title {
+            position: absolute;
+            z-index: 500;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0;
+            margin-left: 30px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .help-button {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 500;
+        }
+        
+        .help-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+            min-height: 500px;
+            overflow: hidden;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1e40af;
+            font-size: 0.95rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(30, 58, 138, 0.2);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            color: #1e293b;
+        }
+        
+        .form-input:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+            background: white;
+        }
+
+        .category-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            font-weight: 500;
+            color: #1e40af;
+            margin-bottom: 0.75rem;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .option-chip {
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: rgba(30, 58, 138, 0.05);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            color: #1e40af;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-chip:hover {
+             background: rgba(30, 58, 138, 0.1);
+        }
+
+        .option-chip.selected {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            border-color: transparent;
+            font-weight: 500;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(30, 58, 138, 0.4);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 15px 35px rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .result-card img {
+            max-width: 128px;
+            height: auto;
+            margin: 0 auto 1rem auto;
+            display: block;
+        }
+
+        .result-prompt {
+            font-size: 0.8rem;
+            color: #64748b;
+            background: rgba(30, 58, 138, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(30, 58, 138, 0.8); backdrop-filter: blur(10px); }
+        .modal-content { background: white; margin: 10% auto; padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 600px; position: relative; animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        .close { position: absolute; right: 20px; top: 20px; color: #64748b; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal h2 { color: #1e3a8a; margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 700; }
+        .guide-step { display: flex; align-items: flex-start; margin-bottom: 1.5rem; }
+        .step-number { background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
+        .step-content h4 { color: #1e3a8a; margin-bottom: 0.5rem; }
+        .step-content p { color: #64748b; line-height: 1.5; }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 1rem; }
+            .panel { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Yapay Zeka Harita İşaretleri </h1>
+            <p>Hayalindeki harita işaretini anlat, yapay zeka haritan için tasarlasın!</p>
+            <p class="credit">Emiray Kahya tarafından ❤️ ile yapıldı</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2 class="section-title">⚙️ Harita İşareti Üretimi </h2>
+                <div class="form-group">
+                    <label class="form-label">🔑 Google Gemini API Key</label>
+                    <input type="password" id="apiKey" class="form-input" placeholder="Google AI Stüdyosu API Key'inizi buraya girin">
+                </div>
+                <div class="form-group">
+                    <label for="promptInput" class="form-label">1. Harita İşareti Açıklaması Girin</label>
+                    <input type="text" id="promptInput" class="form-input" placeholder="Örn: kahve dükkanı, dağ zirvesi, antik harabe...">
+                </div>
+
+                <div class="category-container">
+                    <p class="category-title">2. Stili Geliştirin (Çoklu Seçim)</p>
+                    <div class="options-grid" id="styleOptions">
+                        <div class="option-chip" data-value="minimalist">Minimalist</div>
+                        <div class="option-chip" data-value="flat icon">Düz ikon</div>
+                        <div class="option-chip" data-value="3D icon">3D</div>
+                        <div class="option-chip" data-value="pixel art">Pixel Art</div>
+                        <div class="option-chip" data-value="vintage">Vintage</div>
+                        <div class="option-chip" data-value="cartoonish">Çizgi Film</div>
+                    </div>
+                </div>
+
+                 <div class="category-container">
+                    <p class="category-title">3. Renk Paleti Seçin</p>
+                    <div class="options-grid" id="colorOptions">
+                        <div class="option-chip" data-value="vibrant colors">Canlı Renkler</div>
+                        <div class="option-chip" data-value="pastel colors">Pastel</div>
+                        <div class="option-chip" data-value="monochrome">Monokrom</div>
+                        <div class="option-chip" data-value="earth tones">Toprak Tonları</div>
+                    </div>
+                </div>
+
+                 <div class="category-container">
+                    <p class="category-title">4. Detay Seviyesi Belirleyin</p>
+                    <div class="options-grid" id="detailOptions">
+                        <div class="option-chip" data-value="simple, clean lines">Sade, Temiz Çizgiler</div>
+                        <div class="option-chip" data-value="highly detailed">Yüksek Detaylı</div>
+                        <div class="option-chip" data-value="with subtle shadow">Hafif Gölgeli</div>
+                    </div>
+                </div>
+                
+                <button id="generateBtn" class="generate-btn" disabled>
+                    🎨 Harita İşareti Oluştur
+                </button>
+                <div id="resultContainer" style="display: none;"></div>
+            </div>
+            <div class="panel map-panel">
+                 <h2 class="section-title">📍 Önizleme Haritası</h2>
+                 <button class="help-button" onclick="openModal()">ℹ️</button>
+                 <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📖 Nasıl Kullanılır?</h2>
+            <div class="guide-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>🗝️ API Anahtarını Girin</h4>
+                    <p>Başlamak için Google Gemini API anahtarınızı girin.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>📝 Harita İşaretini Tanımlayın</h4>
+                    <p>Oluşturmak istediğiniz harita işaretini basitçe açıklayın. Örn: "modern bir ofis binası".</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>✨ Stili Geliştirin</h4>
+                    <p>Stil, renk ve detay kategorilerinden istediğiniz kadar seçenek belirleyerek isteminizi zenginleştirin. Bu, yapay zekanın daha iyi sonuçlar üretmesine yardımcı olur.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>🎨 Oluştur & Önizle</h4>
+                    <p>"Harita İşareti Oluştur" butonuna tıklayın. Üretilen işaret, sağdaki haritada anında görünecektir. Beğenmezseniz, ayarları değiştirip tekrar deneyin!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    
+    <script>
+        let map, previewMarker = null;
+        
+        function initMap() {
+            map = L.map('map').setView([41.0257, 28.9744], 15); // Start in Istanbul
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+        
+        function updateGenerateButton() {
+            const btn = document.getElementById('generateBtn');
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const prompt = document.getElementById('promptInput').value.trim();
+            btn.disabled = !(apiKey && prompt);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('apiKey').addEventListener('input', updateGenerateButton);
+            document.getElementById('promptInput').addEventListener('input', updateGenerateButton);
+            document.getElementById('generateBtn').addEventListener('click', generateSymbol);
+            
+            document.querySelectorAll('.option-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    // Handle single-selection for categories that need it
+                    const parentId = chip.parentElement.id;
+                    if (parentId === 'colorOptions' || parentId === 'detailOptions') {
+                        chip.parentElement.querySelectorAll('.option-chip').forEach(c => c.classList.remove('selected'));
+                    }
+                    chip.classList.toggle('selected');
+                });
+            });
+        }
+        
+        async function makeBackgroundTransparent(imageUrl) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    const tolerance = 15;
+
+                    for (let i = 0; i < data.length; i += 4) {
+                        if (data[i] > 255 - tolerance && data[i + 1] > 255 - tolerance && data[i + 2] > 255 - tolerance) {
+                            data[i + 3] = 0; // Make pixel transparent
+                        }
+                    }
+
+                    ctx.putImageData(imageData, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+
+                img.onerror = () => reject(new Error('Failed to load image for processing.'));
+                img.src = imageUrl;
+            });
+        }
+
+        async function generateSymbol() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (!apiKey) {
+                alert('Lütfen Google Gemini API anahtarınızı girin.');
+                return;
+            }
+
+            const basePrompt = document.getElementById('promptInput').value.trim();
+            if (!basePrompt) {
+                alert('Nasıl bir harita işareti istiyorsunuz? Detay verebilirsiniz.');
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span><span class="loading-text">Oluşturuluyor...</span>';
+            resultContainer.style.display = 'none';
+
+            let promptAdditions = [];
+            document.querySelectorAll('.option-chip.selected').forEach(chip => {
+                promptAdditions.push(chip.dataset.value);
+            });
+
+            const finalPrompt = `A map icon of a ${basePrompt}. ${promptAdditions.join(', ')}. Vector style, map symbol`;
+
+            try {
+                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: finalPrompt }] }],
+                        generationConfig: { responseModalities: ['IMAGE'] },
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'API isteği başarısız oldu.');
+                }
+
+                const result = await response.json();
+                const base64Data = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+
+                if (!base64Data) {
+                    throw new Error('API yanıtında resim verisi bulunamadı.');
+                }
+                
+                const imageUrlWithWhiteBg = `data:image/png;base64,${base64Data}`;
+                const transparentImageUrl = await makeBackgroundTransparent(imageUrlWithWhiteBg);
+                
+                displayResult(transparentImageUrl, finalPrompt);
+                previewOnMap(transparentImageUrl);
+
+            } catch (error) {
+                console.error('Error generating symbol:', error);
+                alert(`Bir hata oluştu: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🎨 Harita İşaretini Oluştur';
+                updateGenerateButton();
+            }
+        }
+
+        function displayResult(imageUrl, prompt) {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = `
+                <div class="result-card">
+                    <img src="${imageUrl}" alt="Generated Symbol">
+                    <p class="category-title" style="margin-bottom: 0.5rem;">Oluşturulan Harita İşareti</p>
+                    <p class="result-prompt"><strong>Kullanılan Prompt:</strong> ${prompt}</p>
+                </div>
+            `;
+            resultContainer.style.display = 'block';
+        }
+
+        function previewOnMap(imageUrl) {
+            if (previewMarker) {
+                map.removeLayer(previewMarker);
+            }
+
+            const symbolIcon = L.icon({
+                iconUrl: imageUrl,
+                iconSize: [128, 128], 
+                iconAnchor: [32, 32],
+            });
+
+            const center = map.getCenter();
+            previewMarker = L.marker(center, { icon: symbolIcon }).addTo(map);
+            map.panTo(center); // Slightly adjust view to show marker
+        }
+        
+        // Modal functions
+        function openModal() { document.getElementById('helpModal').style.display = 'block'; }
+        function closeModal() { document.getElementById('helpModal').style.display = 'none'; }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('helpModal')) closeModal();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>
+
+
+
