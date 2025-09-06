@@ -32,6 +32,7 @@ Artık projeniz veya haritanız için mükemmel ikonu aramak zorunda değilsiniz
 
 - **Kullanıcı Dostu Arayüz:**  
   Yardım menüsü ve basit adımlarla kolay kullanım.  
+<img width="1232" height="833" alt="image" src="https://github.com/user-attachments/assets/919d51f7-7568-4fab-a86e-956cd8cef674" />
 
 ---
 
